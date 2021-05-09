@@ -5,7 +5,7 @@ var produtoSchema = new mongoose.Schema({
   nome: {
     type: String,
     required: true,
-    unique: true,
+    unique: true, //valor unico
     index: true,
   },
   preco: {
@@ -16,7 +16,6 @@ var produtoSchema = new mongoose.Schema({
   imagem: String,
   permiteAlteracao: {
     type: Boolean,
-    required: true,
     default: true,
   },
 });

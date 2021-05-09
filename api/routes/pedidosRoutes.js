@@ -1,4 +1,5 @@
 const express = require("express");
+const Pedido = require("../models/pedido");
 const routes = express.Router();
 
 routes.post("/exemplo/:idProduto", function (req, res) {
@@ -12,29 +13,37 @@ routes.post("/exemplo/:idProduto", function (req, res) {
   });
 });
 
-routes.get("/", (req, res) => {
-  console.log(`GET Pedidos!`);
-  res.send("Ola turma!");
+routes.get("/", async (req, res) => {
+  try {
+    const doc = await Pedido.find().populate("lista.idProduto");
+    res.send(doc);
+  } catch (err) {
+    res.status(500).send({ mensagem: err.message, erro: err });
+  }
 });
 
-routes.post("/", (req, res) => {
-  console.log(`GET Pedidos!`);
-  res.send("Ola turma!");
+routes.post("/", async (req, res) => {
+  const { nomeUsuario, lista } = req.body;
+  try {
+    const pedido = new Pedido({
+      nomeUsuario: nomeUsuario,
+      lista: lista,
+    });
+    const doc = await pedido.save();
+    res.status(204).send({});
+  } catch (err) {
+    res.status(500).send({ mensagem: err.message, erro: err });
+  }
 });
 
 routes.get("/:idPedidos", function (req, res) {
   const { idPedidos } = req.params;
-  res.send("DELETE request to the homepage");
-});
-
-routes.patch("/:idPedidos", function (req, res) {
-  const { idPedidos } = req.params;
-  res.send("DELETE request to the homepage");
+  res.send("GET request pedido unico");
 });
 
 routes.delete("/:idPedidos", function (req, res) {
   const { idPedidos } = req.params;
-  res.send("DELETE request to the homepage");
+  res.send("DELETE request pedido unico");
 });
 
 module.exports = routes;
